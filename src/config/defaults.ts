@@ -25,6 +25,7 @@ export type LayerKey =
   | 'deformedSphere'
   | 'faultBlock'
   | 'faultPlane'
+  | 'cutFault'
   | 'displacementField'
   | 'nodalSurfaces'
   | 'faultVectors'
@@ -64,6 +65,7 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     deformedSphere: 0.9,
     faultBlock: 1,
     faultPlane: 1,
+    cutFault: 0.5, // fault_alpha
     displacementField: 1,
     nodalSurfaces: 1,
     faultVectors: 1,
@@ -77,6 +79,7 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     deformedSphere: false, // overlaps the focal sphere; off by default
     faultBlock: false, // alternative representation; off by default
     faultPlane: false, // off by default
+    cutFault: false, // off by default
     displacementField: false, // dense; off by default
     nodalSurfaces: true,
     faultVectors: true,

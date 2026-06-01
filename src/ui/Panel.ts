@@ -49,6 +49,7 @@ const LAYERS: Array<{ key: LayerKey; label: string }> = [
   { key: 'deformedSphere', label: 'Displacement field' },
   { key: 'faultBlock', label: 'Fault block' },
   { key: 'faultPlane', label: 'Fault plane' },
+  { key: 'cutFault', label: 'Cut fault' },
   { key: 'displacementField', label: 'Vector field' },
   { key: 'nodalSurfaces', label: 'Nodal surfaces' },
   { key: 'faultVectors', label: 'Fault vectors' },

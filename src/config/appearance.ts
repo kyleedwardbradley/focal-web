@@ -17,6 +17,7 @@ export const COLORS = {
   sphereWire: 0x303040,
   nodalSurface: 0xa04c9c, // Mat_NodalSurface (160, 76, 156) — pink/mauve
   cutFace: 0xa8a29a, // neutral "rock interior" fill for the exposed cut surface
+  faultPoly: 0xff0000, // mat_faultpoly — translucent red fault-plane patch
   compass: 0x4a8a5a,
   compassNorth: 0xff5a5a,
   // Component-dipole colors keyed by the "from" axis (E=x, N=y, U=z).

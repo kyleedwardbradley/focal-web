@@ -12,6 +12,7 @@ import { FocalSphereView } from './features/FocalSphereView';
 import { DeformedSphereView } from './features/DeformedSphereView';
 import { FaultBlockView } from './features/FaultBlockView';
 import { FaultPlaneView } from './features/FaultPlaneView';
+import { CutFaultView } from './features/CutFaultView';
 import { DisplacementFieldView } from './features/DisplacementFieldView';
 import { NodalSurfacesView } from './features/NodalSurfacesView';
 import { FaultVectorsView } from './features/FaultVectorsView';
@@ -40,6 +41,7 @@ export class FocalScene {
       deformedSphere: this.deformed,
       faultBlock: new FaultBlockView(this.root),
       faultPlane: new FaultPlaneView(this.root),
+      cutFault: new CutFaultView(this.root),
       displacementField: this.field,
       nodalSurfaces: new NodalSurfacesView(this.root),
       faultVectors: new FaultVectorsView(this.root),
