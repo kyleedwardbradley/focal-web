@@ -47,7 +47,17 @@ export class CutFaultView implements FeatureView {
   private geo: BufferGeometry = fanGeometry([]);
 
   constructor(parent: Object3D) {
-    this.material = new MeshStandardMaterial({ color: COLORS.faultPoly, roughness: 0.8, side: DoubleSide });
+    // polygonOffset pulls the patch slightly toward the camera so it renders
+    // cleanly on top of coplanar surfaces (the nodal surfaces / sphere cut)
+    // instead of z-fighting them.
+    this.material = new MeshStandardMaterial({
+      color: COLORS.faultPoly,
+      roughness: 0.8,
+      side: DoubleSide,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    });
     this.mesh = new Mesh(this.geo, this.material);
     this.mesh.renderOrder = 1; // translucent; paint after the sphere (stable order)
     this.group.add(this.mesh);
