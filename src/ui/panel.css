@@ -1,0 +1,165 @@
+.panel {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  width: 260px;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+  padding: 14px 16px 18px;
+  box-sizing: border-box;
+  background: rgba(20, 22, 28, 0.82);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #e6e6ea;
+  font: 12px/1.4 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  user-select: none;
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-button {
+  flex: 1;
+  padding: 6px 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #8a8a96;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab-button:hover {
+  color: #c8c8d0;
+}
+
+.tab-button.active {
+  color: #e6e6ea;
+  border-bottom-color: #4aa3ff;
+}
+
+.layer-row {
+  display: grid;
+  grid-template-columns: 1fr 72px;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 2px;
+}
+
+.layer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #c8c8d0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.layer-toggle input[type='checkbox'] {
+  accent-color: #4aa3ff;
+  cursor: pointer;
+}
+
+.layer-opacity {
+  width: 100%;
+  accent-color: #6a6a76;
+}
+
+.check-group {
+  display: flex;
+  gap: 14px;
+  padding: 2px;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #c8c8d0;
+}
+
+.check-row input[type='checkbox'] {
+  accent-color: #4aa3ff;
+  cursor: pointer;
+}
+
+.panel-section {
+  margin: 14px 0 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a8a96;
+}
+
+.control-row {
+  display: grid;
+  grid-template-columns: 38px 1fr 46px;
+  align-items: center;
+  gap: 8px;
+  margin: 5px 0;
+}
+
+.control-label {
+  color: #c8c8d0;
+}
+
+.control-row input[type='range'] {
+  width: 100%;
+  accent-color: #4aa3ff;
+}
+
+.control-number,
+.control-select {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: #e6e6ea;
+  font: inherit;
+  padding: 2px 4px;
+}
+
+.control-select {
+  grid-column: 2 / 4;
+}
+
+.readout {
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  color: #c8c8d0;
+}
+
+.readout-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 1px 0;
+}
+
+.readout-line span {
+  color: #8a8a96;
+}
+
+.readout-sub {
+  text-align: right;
+  font-size: 10px;
+  color: #6a6a76;
+  margin-bottom: 6px;
+}

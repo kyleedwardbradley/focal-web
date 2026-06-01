@@ -1,0 +1,27 @@
+[
+  {
+    "id": "thrust45",
+    "label": "Thrust (45° dip-slip)",
+    "tensor": { "mrr": 1, "mtt": 0, "mpp": -1, "mrt": 0, "mrp": 0, "mtp": 0 }
+  },
+  {
+    "id": "normal45",
+    "label": "Normal (45° dip-slip)",
+    "tensor": { "mrr": -1, "mtt": 0, "mpp": 1, "mrt": 0, "mrp": 0, "mtp": 0 }
+  },
+  {
+    "id": "strikeslip",
+    "label": "Strike-slip (vertical)",
+    "tensor": { "mrr": 0, "mtt": 0, "mpp": 0, "mrt": 0, "mrp": 0, "mtp": 1 }
+  },
+  {
+    "id": "clvd",
+    "label": "CLVD (vertical)",
+    "tensor": { "mrr": 2, "mtt": -1, "mpp": -1, "mrt": 0, "mrp": 0, "mtp": 0 }
+  },
+  {
+    "id": "oblique",
+    "label": "Oblique (mixed)",
+    "tensor": { "mrr": 0.5, "mtt": 0.5, "mpp": -1, "mrt": 0.8, "mrp": 0.3, "mtp": 0 }
+  }
+]
