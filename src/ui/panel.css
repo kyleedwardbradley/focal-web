@@ -79,6 +79,46 @@
   accent-color: #6a6a76;
 }
 
+.usgs-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px;
+  margin: 6px 0 2px;
+}
+
+.usgs-input {
+  box-sizing: border-box;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: #e6e6ea;
+  font: inherit;
+  padding: 3px 6px;
+}
+
+.usgs-button {
+  background: #2f6fb0;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  padding: 3px 12px;
+  cursor: pointer;
+}
+
+.usgs-button:hover {
+  background: #3a82cc;
+}
+
+.usgs-status {
+  min-height: 14px;
+  font-size: 11px;
+  color: #8a8a96;
+  margin-bottom: 4px;
+}
+
 .check-group {
   display: flex;
   gap: 14px;

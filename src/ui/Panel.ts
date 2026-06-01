@@ -16,6 +16,7 @@ import { Slider } from './controls/Slider';
 import { Checkbox } from './controls/Checkbox';
 import { LayerControl } from './controls/LayerControl';
 import { EventPicker, type FocalEvent } from './EventPicker';
+import { fetchEvent } from '../data/usgs';
 import events from '../data/events.json';
 import './panel.css';
 
@@ -69,6 +70,7 @@ export class Panel {
   private readonly fieldModeSelect: HTMLSelectElement;
   private readonly fieldCountSlider: Slider;
   private readonly readout: HTMLDivElement;
+  private readonly usgsStatus: HTMLDivElement;
 
   constructor(private readonly store: Store) {
     const state = store.getState();
@@ -87,8 +89,31 @@ export class Panel {
     const picker = new EventPicker(events as FocalEvent[], (ev) => {
       this.store.setTensor(ev.tensor);
       this.store.setOptions({ slip: 0 });
+      this.usgsStatus.textContent = '';
     });
     mechanismTab.append(picker.el);
+
+    // Load a real moment tensor from USGS by event id.
+    const usgsRow = document.createElement('div');
+    usgsRow.className = 'usgs-row';
+    const usgsInput = document.createElement('input');
+    usgsInput.type = 'text';
+    usgsInput.className = 'usgs-input';
+    usgsInput.placeholder = 'USGS event id (e.g. us6000qw60)';
+    const usgsButton = document.createElement('button');
+    usgsButton.className = 'usgs-button';
+    usgsButton.textContent = 'Load';
+    const load = (): void => void this.loadUsgs(usgsInput.value);
+    usgsButton.addEventListener('click', load);
+    usgsInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') load();
+    });
+    usgsRow.append(usgsInput, usgsButton);
+    mechanismTab.append(usgsRow);
+
+    this.usgsStatus = document.createElement('div');
+    this.usgsStatus.className = 'usgs-status';
+    mechanismTab.append(this.usgsStatus);
 
     mechanismTab.append(section('Moment Tensor'));
     for (const { key, label } of COMPONENTS) {
@@ -213,6 +238,20 @@ export class Panel {
 
     // The single reflection subscription (fires immediately with current state).
     this.store.subscribe((solution, s) => this.reflect(solution, s));
+  }
+
+  private async loadUsgs(input: string): Promise<void> {
+    this.usgsStatus.textContent = 'Loading…';
+    try {
+      const ev = await fetchEvent(input);
+      this.store.setTensor(ev.tensor);
+      this.store.setOptions({ slip: 0 });
+      const date = ev.meta.time ? new Date(ev.meta.time).toLocaleDateString() : '';
+      const mag = ev.meta.mag != null ? `M${ev.meta.mag} ` : '';
+      this.usgsStatus.textContent = `${mag}${ev.meta.place} · ${date} · ${ev.source.toUpperCase()}`;
+    } catch (e) {
+      this.usgsStatus.textContent = e instanceof Error ? e.message : 'Failed to load event';
+    }
   }
 
   private buildTabBar(mechanismTab: HTMLElement, layersTab: HTMLElement): HTMLElement {
