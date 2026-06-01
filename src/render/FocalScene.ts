@@ -72,10 +72,6 @@ export class FocalScene {
     for (const key of Object.keys(this.views) as SceneLayer[]) {
       this.views[key].setVisible(visibility[key]);
     }
-    // Don't cap the sphere's cut when a fault-surface layer is shown: the cap
-    // would otherwise z-fight the coplanar fault plane / cut-fault patch, and we
-    // want those surfaces visible through the opening instead.
-    this.sphere.setCapsEnabled(!visibility.faultPlane && !visibility.cutFault);
   }
 
   /** Apply per-layer opacity (ignores 'axes', which the Viewer owns). */
