@@ -48,6 +48,7 @@ const LAYERS: Array<{ key: LayerKey; label: string }> = [
   { key: 'sphere', label: 'Focal sphere' },
   { key: 'deformedSphere', label: 'Displacement field' },
   { key: 'faultBlock', label: 'Fault block' },
+  { key: 'faultPlane', label: 'Fault plane' },
   { key: 'displacementField', label: 'Vector field' },
   { key: 'nodalSurfaces', label: 'Nodal surfaces' },
   { key: 'faultVectors', label: 'Fault vectors' },
@@ -67,6 +68,7 @@ export class Panel {
   private readonly slipSlider: Slider;
   private readonly scaleSlider: Slider;
   private readonly waveSelect: HTMLSelectElement;
+  private readonly flipCheck: Checkbox;
   private readonly fieldModeSelect: HTMLSelectElement;
   private readonly fieldCountSlider: Slider;
   private readonly readout: HTMLDivElement;
@@ -174,6 +176,13 @@ export class Panel {
       onChange: (v) => this.store.setOptions({ slip: v }),
     });
     mechanismTab.append(this.slipSlider.el);
+
+    this.flipCheck = new Checkbox({
+      label: 'Flip nodal plane',
+      value: state.options.flipPlane,
+      onChange: (v) => this.store.setFlipPlane(v),
+    });
+    mechanismTab.append(this.flipCheck.el);
 
     // Displacement vector field: wave mode + sample count (toggle is in Layers).
     mechanismTab.append(section('Vector Field'));
@@ -286,6 +295,7 @@ export class Panel {
     this.fieldCountSlider.setValue(state.options.field.count);
     if (document.activeElement !== this.waveSelect) this.waveSelect.value = state.options.wave;
     if (document.activeElement !== this.fieldModeSelect) this.fieldModeSelect.value = state.options.field.mode;
+    this.flipCheck.setValue(state.options.flipPlane);
     for (const { key } of LAYERS) {
       const control = this.layerControls.get(key);
       control?.setVisible(state.options.visibility[key]);

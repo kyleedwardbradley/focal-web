@@ -11,6 +11,7 @@ import type { FieldMode } from '../core/waveField';
 import { FocalSphereView } from './features/FocalSphereView';
 import { DeformedSphereView } from './features/DeformedSphereView';
 import { FaultBlockView } from './features/FaultBlockView';
+import { FaultPlaneView } from './features/FaultPlaneView';
 import { DisplacementFieldView } from './features/DisplacementFieldView';
 import { NodalSurfacesView } from './features/NodalSurfacesView';
 import { FaultVectorsView } from './features/FaultVectorsView';
@@ -38,6 +39,7 @@ export class FocalScene {
       sphere: this.sphere,
       deformedSphere: this.deformed,
       faultBlock: new FaultBlockView(this.root),
+      faultPlane: new FaultPlaneView(this.root),
       displacementField: this.field,
       nodalSurfaces: new NodalSurfacesView(this.root),
       faultVectors: new FaultVectorsView(this.root),
@@ -68,6 +70,9 @@ export class FocalScene {
     for (const key of Object.keys(this.views) as SceneLayer[]) {
       this.views[key].setVisible(visibility[key]);
     }
+    // Don't cap the sphere's cut when the fault plane is shown, so its
+    // slickensided surface is visible through the opening.
+    this.sphere.setCapsEnabled(!visibility.faultPlane);
   }
 
   /** Apply per-layer opacity (ignores 'axes', which the Viewer owns). */

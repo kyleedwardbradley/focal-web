@@ -54,6 +54,8 @@ export class FocalSphereView implements FeatureView {
   private readonly fixedCap: Mesh;
   private readonly slipCap: Mesh;
   private readonly capQuat = new Quaternion();
+  private capsEnabled = true; // suppressed when the fault plane is shown
+  private lastParted = false;
 
   constructor(parent: Object3D) {
     this.geometry = new SphereGeometry(GEOM.sphereRadius, 96, 64);
@@ -115,15 +117,25 @@ export class FocalSphereView implements FeatureView {
     this.slipPlane.set(fn.clone().negate(), fn.dot(displacement));
 
     // Caps fill the exposed faces (disc normal = fault normal). Only visible
-    // once the blocks have parted, to avoid coincident-face flicker at rest.
+    // once the blocks have parted, and not when the fault plane is being shown.
     this.capQuat.setFromUnitVectors(Z_AXIS, fn);
-    const parted = solution.slip > 1e-4;
-    for (const cap of [this.fixedCap, this.slipCap]) {
-      cap.visible = parted;
-      cap.quaternion.copy(this.capQuat);
-    }
+    for (const cap of [this.fixedCap, this.slipCap]) cap.quaternion.copy(this.capQuat);
     this.fixedCap.position.set(0, 0, 0);
     this.slipCap.position.copy(displacement);
+    this.lastParted = solution.slip > 1e-4;
+    this.applyCapVisibility();
+  }
+
+  /** Suppress the cut caps (e.g. so the fault-plane surface shows through the cut). */
+  setCapsEnabled(enabled: boolean): void {
+    this.capsEnabled = enabled;
+    this.applyCapVisibility();
+  }
+
+  private applyCapVisibility(): void {
+    const visible = this.lastParted && this.capsEnabled;
+    this.fixedCap.visible = visible;
+    this.slipCap.visible = visible;
   }
 
   setVisible(visible: boolean): void {

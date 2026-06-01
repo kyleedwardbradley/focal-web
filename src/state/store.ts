@@ -25,7 +25,8 @@ export class Store {
 
   constructor(initial: AppState = { tensor: DEFAULT_TENSOR, options: DEFAULT_OPTIONS }) {
     this.state = initial;
-    this.solution = derive(applyComponents(initial.tensor, initial.options.components), initial.options.slip);
+    const o = initial.options;
+    this.solution = derive(applyComponents(initial.tensor, o.components), o.slip, o.flipPlane);
   }
 
   getState(): AppState {
@@ -45,6 +46,12 @@ export class Store {
   /** Merge view options (e.g. slip) and recompute. */
   setOptions(patch: Partial<ViewOptions>): void {
     this.state = { ...this.state, options: { ...this.state.options, ...patch } };
+    this.recompute();
+  }
+
+  /** Cut along the conjugate nodal plane (re-derives the fault geometry). */
+  setFlipPlane(flipPlane: boolean): void {
+    this.state = { ...this.state, options: { ...this.state.options, flipPlane } };
     this.recompute();
   }
 
@@ -104,8 +111,9 @@ export class Store {
   private recompute(): void {
     // The visualized tensor is the raw tensor filtered to the selected
     // decomposition components (full tensor when all are selected).
-    const tensor = applyComponents(this.state.tensor, this.state.options.components);
-    this.solution = derive(tensor, this.state.options.slip);
+    const o = this.state.options;
+    const tensor = applyComponents(this.state.tensor, o.components);
+    this.solution = derive(tensor, o.slip, o.flipPlane);
     this.notify();
   }
 

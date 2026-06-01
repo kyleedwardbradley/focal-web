@@ -24,6 +24,7 @@ export type LayerKey =
   | 'sphere'
   | 'deformedSphere'
   | 'faultBlock'
+  | 'faultPlane'
   | 'displacementField'
   | 'nodalSurfaces'
   | 'faultVectors'
@@ -37,6 +38,8 @@ export interface ViewOptions {
   slip: number;
   /** Body wave to color the focal sphere by. */
   wave: WaveType;
+  /** Cut along the conjugate nodal plane instead of the primary. */
+  flipPlane: boolean;
   /** Which decomposition parts to include in the visualized tensor. */
   components: { iso: boolean; dc: boolean; clvd: boolean };
   /** Displacement vector field settings. */
@@ -52,6 +55,7 @@ export interface ViewOptions {
 export const DEFAULT_OPTIONS: ViewOptions = {
   slip: 0,
   wave: 'P',
+  flipPlane: false,
   components: { iso: true, dc: true, clvd: true },
   field: { mode: 'full', count: 200 },
   scale: 1,
@@ -59,6 +63,7 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     sphere: 0.82,
     deformedSphere: 0.9,
     faultBlock: 1,
+    faultPlane: 1,
     displacementField: 1,
     nodalSurfaces: 1,
     faultVectors: 1,
@@ -71,6 +76,7 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     sphere: true,
     deformedSphere: false, // overlaps the focal sphere; off by default
     faultBlock: false, // alternative representation; off by default
+    faultPlane: false, // off by default
     displacementField: false, // dense; off by default
     nodalSurfaces: true,
     faultVectors: true,
