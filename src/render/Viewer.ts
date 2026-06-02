@@ -57,6 +57,13 @@ export class Viewer {
     window.addEventListener('resize', this.onResize);
   }
 
+  private readonly frameCallbacks: Array<(camera: PerspectiveCamera) => void> = [];
+
+  /** Register a per-frame callback (e.g. the label manager re-projecting on orbit). */
+  onFrame(cb: (camera: PerspectiveCamera) => void): void {
+    this.frameCallbacks.push(cb);
+  }
+
   /** Begin the render loop. */
   start(): void {
     this.renderer.setAnimationLoop(this.tick);
@@ -74,6 +81,7 @@ export class Viewer {
 
   private readonly tick = (): void => {
     this.controls.update();
+    for (const cb of this.frameCallbacks) cb(this.camera);
     this.renderer.render(this.scene, this.camera);
   };
 

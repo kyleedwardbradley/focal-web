@@ -52,10 +52,26 @@
 
 .layer-row {
   display: grid;
-  grid-template-columns: 1fr 72px;
+  grid-template-columns: 1fr 64px auto;
   align-items: center;
   gap: 8px;
   padding: 4px 2px;
+}
+
+.layer-labeltoggle {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: #8a8a96;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.layer-labeltoggle input[type='checkbox'] {
+  accent-color: #4aa3ff;
+  cursor: pointer;
+  margin: 0;
 }
 
 .layer-toggle {

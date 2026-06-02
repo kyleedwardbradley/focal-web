@@ -11,6 +11,8 @@ import { Viewer } from './render/Viewer';
 import { FocalScene } from './render/FocalScene';
 import { Panel } from './ui/Panel';
 import { BeachballPanel } from './ui/BeachballPanel';
+import { LabelOverlay } from './labels/LabelOverlay';
+import { LabelManager } from './labels/LabelManager';
 
 const container = document.getElementById('app');
 if (!container) throw new Error('#app container not found');
@@ -22,6 +24,12 @@ const panel = new Panel(store);
 document.body.append(panel.el);
 const beachball = new BeachballPanel(store);
 document.body.append(beachball.el);
+
+// Floating labels: an overlay over the canvas (under the UI panels), re-projected each frame.
+const labelOverlay = new LabelOverlay();
+container.append(labelOverlay.el);
+const labels = new LabelManager(store, labelOverlay);
+viewer.onFrame((camera) => labels.project(camera));
 
 // The seam: every derived solution flows straight to the scene, and layer
 // visibility is applied from the same state.

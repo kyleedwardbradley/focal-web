@@ -256,8 +256,10 @@ export class Panel {
         label,
         visible: state.options.visibility[key],
         opacity: state.options.opacity[key],
+        labelOn: state.options.labels[key],
         onVisible: (v) => this.store.setVisibility({ [key]: v }),
         onOpacity: (v) => this.store.setOpacity({ [key]: v }),
+        onLabel: (v) => this.store.setLabels({ [key]: v }),
       });
       this.layerControls.set(key, control);
       layersTab.append(control.el);
@@ -320,6 +322,7 @@ export class Panel {
       const control = this.layerControls.get(key);
       control?.setVisible(state.options.visibility[key]);
       control?.setOpacity(state.options.opacity[key]);
+      control?.setLabelOn(state.options.labels[key]);
     }
 
     const [p1, p2] = solution.planes;

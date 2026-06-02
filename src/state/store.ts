@@ -72,6 +72,13 @@ export class Store {
     this.notify();
   }
 
+  /** Toggle per-layer labels. Pure render state — notifies with cached solution. */
+  setLabels(patch: Partial<Record<LayerKey, boolean>>): void {
+    const labels = { ...this.state.options.labels, ...patch };
+    this.state = { ...this.state, options: { ...this.state.options, labels } };
+    this.notify();
+  }
+
   /** Set per-layer opacity. Pure render state — notifies with cached solution. */
   setOpacity(patch: Partial<Record<LayerKey, number>>): void {
     const opacity = { ...this.state.options.opacity, ...patch };

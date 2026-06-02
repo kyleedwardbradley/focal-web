@@ -56,7 +56,18 @@ export interface ViewOptions {
   opacity: Record<LayerKey, number>;
   /** Per-layer visibility. */
   visibility: Record<LayerKey, boolean>;
+  /** Per-layer label visibility. */
+  labels: Record<LayerKey, boolean>;
 }
+
+const ALL_LAYERS: LayerKey[] = [
+  'sphere', 'deformedSphere', 'faultBlock', 'faultPlane', 'cutFault',
+  'displacementField', 'nodalSurfaces', 'faultVectors', 'principalAxes',
+  'componentDipoles', 'compass', 'compassFocal', 'axes',
+];
+
+const allLayers = (value: boolean): Record<LayerKey, boolean> =>
+  Object.fromEntries(ALL_LAYERS.map((k) => [k, value])) as Record<LayerKey, boolean>;
 
 export const DEFAULT_OPTIONS: ViewOptions = {
   slip: 0,
@@ -97,4 +108,5 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     compassFocal: false, // off by default
     axes: true,
   },
+  labels: allLayers(false),
 };
