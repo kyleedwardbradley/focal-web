@@ -62,6 +62,10 @@ export class DeformedSphereView implements FeatureView {
     this.mat.setWave(wave);
   }
 
+  setContours(on: boolean): void {
+    this.mat.setContours(on);
+  }
+
   dispose(): void {
     disposeObject(this.group);
   }

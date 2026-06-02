@@ -64,6 +64,7 @@ export const COMPASS = {
   radius: 1.5,
   depth: -1.35, // z below the sphere
   width: 2.0,
+  focalRadius: 1, // compass_focal_radius — the beachball disc on the compass
 } as const;
 
 /**

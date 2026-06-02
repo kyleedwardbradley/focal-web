@@ -91,6 +91,18 @@ export class Store {
     this.notify();
   }
 
+  /** Toggle amplitude contour bands. Pure render state — notifies with cached solution. */
+  setContours(contours: boolean): void {
+    this.state = { ...this.state, options: { ...this.state.options, contours } };
+    this.notify();
+  }
+
+  /** Toggle the upper-right 2D beachball panel. Pure render state. */
+  setBeachballPanel(beachballPanel: boolean): void {
+    this.state = { ...this.state, options: { ...this.state.options, beachballPanel } };
+    this.notify();
+  }
+
   /** Set displacement-field settings (mode/count). Pure render state. */
   setField(patch: Partial<ViewOptions['field']>): void {
     const field = { ...this.state.options.field, ...patch };

@@ -32,6 +32,7 @@ export type LayerKey =
   | 'principalAxes'
   | 'componentDipoles'
   | 'compass'
+  | 'compassFocal'
   | 'axes';
 
 export interface ViewOptions {
@@ -39,6 +40,10 @@ export interface ViewOptions {
   slip: number;
   /** Body wave to color the focal sphere by. */
   wave: WaveType;
+  /** Show the amplitude contour bands on the radiation pattern. */
+  contours: boolean;
+  /** Show the 2D beachball plot in the upper-right corner. */
+  beachballPanel: boolean;
   /** Cut along the conjugate nodal plane instead of the primary. */
   flipPlane: boolean;
   /** Which decomposition parts to include in the visualized tensor. */
@@ -56,6 +61,8 @@ export interface ViewOptions {
 export const DEFAULT_OPTIONS: ViewOptions = {
   slip: 0,
   wave: 'P',
+  contours: true,
+  beachballPanel: true,
   flipPlane: false,
   components: { iso: true, dc: true, clvd: true },
   field: { mode: 'full', count: 200 },
@@ -72,6 +79,7 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     principalAxes: 1,
     componentDipoles: 1,
     compass: 1,
+    compassFocal: 1,
     axes: 1,
   },
   visibility: {
@@ -86,6 +94,7 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     principalAxes: true,
     componentDipoles: false, // dense; off by default
     compass: true,
+    compassFocal: false, // off by default
     axes: true,
   },
 };

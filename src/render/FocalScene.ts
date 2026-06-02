@@ -19,6 +19,7 @@ import { FaultVectorsView } from './features/FaultVectorsView';
 import { PrincipalAxesView } from './features/PrincipalAxesView';
 import { ComponentDipolesView } from './features/ComponentDipolesView';
 import { CompassView } from './features/CompassView';
+import { CompassFocalView } from './features/CompassFocalView';
 import type { FeatureView, RenderContext } from './features/FeatureView';
 
 /** Layers the scene owns ('axes' is the Viewer's XYZ helper, handled there). */
@@ -30,12 +31,14 @@ export class FocalScene {
   private readonly sphere: FocalSphereView;
   private readonly deformed: DeformedSphereView;
   private readonly field: DisplacementFieldView;
+  private readonly compassFocal: CompassFocalView;
 
   constructor(parent: Object3D) {
     parent.add(this.root);
     this.sphere = new FocalSphereView(this.root);
     this.deformed = new DeformedSphereView(this.root);
     this.field = new DisplacementFieldView(this.root);
+    this.compassFocal = new CompassFocalView(this.root);
     this.views = {
       sphere: this.sphere,
       deformedSphere: this.deformed,
@@ -48,6 +51,7 @@ export class FocalScene {
       principalAxes: new PrincipalAxesView(this.root),
       componentDipoles: new ComponentDipolesView(this.root),
       compass: new CompassView(this.root),
+      compassFocal: this.compassFocal,
     };
   }
 
@@ -56,10 +60,18 @@ export class FocalScene {
     for (const view of Object.values(this.views)) view.update(solution, ctx);
   }
 
-  /** Set the body wave that colors the focal + deformed spheres. */
+  /** Set the body wave that colors the focal + deformed spheres + compass plot. */
   setWave(wave: WaveType): void {
     this.sphere.setWave(wave);
     this.deformed.setWave(wave);
+    this.compassFocal.setWave(wave);
+  }
+
+  /** Toggle amplitude contour bands on the spheres + compass plot. */
+  setContours(on: boolean): void {
+    this.sphere.setContours(on);
+    this.deformed.setContours(on);
+    this.compassFocal.setContours(on);
   }
 
   /** Set the displacement-field mode + sample count. */

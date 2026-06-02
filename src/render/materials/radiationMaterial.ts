@@ -27,6 +27,8 @@ export interface RadiationMaterial {
   setWave(wave: WaveType): void;
   /** Set the radial P-wave displacement factor (deformed sphere; 0 = no deform). */
   setDisplace(factor: number): void;
+  /** Toggle the amplitude contour bands. */
+  setContours(on: boolean): void;
 }
 
 export interface RadiationOptions {
@@ -84,6 +86,9 @@ export function createRadiationMaterial(options: RadiationOptions = {}): Radiati
     },
     setDisplace(factor: number): void {
       uniforms.uDisplace!.value = factor;
+    },
+    setContours(on: boolean): void {
+      uniforms.uContours!.value = on ? 1 : 0;
     },
   };
 }

@@ -101,6 +101,11 @@ export class FocalSphereView implements FeatureView {
     this.slipMat.setWave(wave);
   }
 
+  setContours(on: boolean): void {
+    this.fixedMat.setContours(on);
+    this.slipMat.setContours(on);
+  }
+
   dispose(): void {
     // disposeObject frees both halves' materials (and the shared geometry).
     disposeObject(this.group);

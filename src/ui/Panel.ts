@@ -56,6 +56,7 @@ const LAYERS: Array<{ key: LayerKey; label: string }> = [
   { key: 'principalAxes', label: 'T / N / P axes' },
   { key: 'componentDipoles', label: 'Component dipoles' },
   { key: 'compass', label: 'Compass' },
+  { key: 'compassFocal', label: 'Compass beachball' },
   { key: 'axes', label: 'XYZ axes' },
 ];
 
@@ -69,6 +70,8 @@ export class Panel {
   private readonly slipSlider: Slider;
   private readonly scaleSlider: Slider;
   private readonly waveSelect: HTMLSelectElement;
+  private readonly contoursCheck: Checkbox;
+  private readonly panelCheck: Checkbox;
   private readonly flipCheck: Checkbox;
   private readonly fieldModeSelect: HTMLSelectElement;
   private readonly fieldCountSlider: Slider;
@@ -177,6 +180,20 @@ export class Panel {
       onChange: (v) => this.store.setOptions({ slip: v }),
     });
     mechanismTab.append(this.slipSlider.el);
+
+    this.contoursCheck = new Checkbox({
+      label: 'Contours',
+      value: state.options.contours,
+      onChange: (v) => this.store.setContours(v),
+    });
+    mechanismTab.append(this.contoursCheck.el);
+
+    this.panelCheck = new Checkbox({
+      label: 'Beachball plot',
+      value: state.options.beachballPanel,
+      onChange: (v) => this.store.setBeachballPanel(v),
+    });
+    mechanismTab.append(this.panelCheck.el);
 
     this.flipCheck = new Checkbox({
       label: 'Flip nodal plane',
@@ -296,6 +313,8 @@ export class Panel {
     this.fieldCountSlider.setValue(state.options.field.count);
     if (document.activeElement !== this.waveSelect) this.waveSelect.value = state.options.wave;
     if (document.activeElement !== this.fieldModeSelect) this.fieldModeSelect.value = state.options.field.mode;
+    this.contoursCheck.setValue(state.options.contours);
+    this.panelCheck.setValue(state.options.beachballPanel);
     this.flipCheck.setValue(state.options.flipPlane);
     for (const { key } of LAYERS) {
       const control = this.layerControls.get(key);
