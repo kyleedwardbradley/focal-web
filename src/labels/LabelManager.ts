@@ -44,6 +44,9 @@ function occludedBySphere(point: Vector3, cam: Vector3, dir: Vector3, R = 1): bo
 }
 
 const DAMP = 0.22; // per-frame fraction moved toward the target angle
+// Offset the label off the anchor's radial direction so the leader meets the
+// vector at a clear angle instead of extending straight along it.
+const CALLOUT_OFFSET = 0.38; // radians (~22°)
 
 const wrapToPi = (a: number): number => {
   let x = a;
@@ -120,8 +123,9 @@ export class LabelManager {
         // keep a hidden placeholder so it fades rather than pops
         placed.push({ id: spec.id, text: spec.text, color: spec.color, x: a.x, y: a.y, line: null, visible: false });
       } else {
-        // Damp the persistent angle toward the anchor's screen angle (shortest path).
-        const target = Math.atan2(a.y - center.y, a.x - center.x);
+        // Damp the persistent angle toward the anchor's screen angle (offset so the
+        // leader is at an angle to the vector), shortest path.
+        const target = Math.atan2(a.y - center.y, a.x - center.x) + CALLOUT_OFFSET;
         const prev = this.angles.get(spec.id);
         const angle = prev === undefined ? target : prev + DAMP * wrapToPi(target - prev);
         offs.push({ spec, ax: a.x, ay: a.y, angle });

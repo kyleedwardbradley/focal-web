@@ -53,8 +53,7 @@ export class LabelOverlay {
         line.setAttribute('y1', String(p.line.y1));
         line.setAttribute('x2', String(p.line.x2));
         line.setAttribute('y2', String(p.line.y2));
-        line.setAttribute('stroke', hex(p.color));
-        line.style.opacity = '0.65';
+        line.style.opacity = '0.7'; // stroke color is uniform white (CSS)
       } else {
         this.lines.get(p.id)?.style.setProperty('opacity', '0');
       }
