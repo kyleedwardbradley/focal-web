@@ -9,7 +9,8 @@
  */
 import type { Store } from '../state/store';
 import type { FocalSolution, MomentTensor } from '../core/types';
-import type { LayerKey, ViewOptions, WaveType } from '../config/defaults';
+import type { LayerKey, LightingOptions, ViewOptions, WaveType } from '../config/defaults';
+import { LIGHT_PRESETS } from '../config/defaults';
 import type { FieldMode } from '../core/waveField';
 import { decompose } from '../core/decompose';
 import { Slider } from './controls/Slider';
@@ -74,6 +75,11 @@ export class Panel {
   private readonly contoursCheck: Checkbox;
   private readonly panelCheck: Checkbox;
   private readonly flipCheck: Checkbox;
+  private ambientSlider!: Slider;
+  private keyLightSlider!: Slider;
+  private azimuthSlider!: Slider;
+  private elevationSlider!: Slider;
+  private headlightCheck!: Checkbox;
   private readonly fieldModeSelect: HTMLSelectElement;
   private readonly fieldCountSlider: Slider;
   private readonly readout: HTMLDivElement;
@@ -89,8 +95,20 @@ export class Panel {
     // ── Tabs ────────────────────────────────────────────────────────────────
     const mechanismTab = document.createElement('div');
     const layersTab = document.createElement('div');
+    const sceneTab = document.createElement('div');
     layersTab.style.display = 'none';
-    this.el.append(this.buildTabBar(mechanismTab, layersTab), mechanismTab, layersTab);
+    sceneTab.style.display = 'none';
+    this.el.append(
+      this.buildTabBar([
+        ['Mechanism', mechanismTab],
+        ['Layers', layersTab],
+        ['Scene', sceneTab],
+      ]),
+      mechanismTab,
+      layersTab,
+      sceneTab,
+    );
+    this.buildSceneTab(sceneTab, state.options.lighting);
 
     // ── Mechanism tab ───────────────────────────────────────────────────────
     const picker = new EventPicker(events as FocalEvent[], (ev) => {
@@ -285,13 +303,81 @@ export class Panel {
     }
   }
 
-  private buildTabBar(mechanismTab: HTMLElement, layersTab: HTMLElement): HTMLElement {
+  private buildSceneTab(tab: HTMLElement, lighting: LightingOptions): void {
+    tab.append(section('Lighting'));
+
+    // Quick presets.
+    const presetRow = document.createElement('div');
+    presetRow.className = 'control-row';
+    const presetLabel = document.createElement('label');
+    presetLabel.className = 'control-label';
+    presetLabel.textContent = 'Preset';
+    const presetSelect = document.createElement('select');
+    presetSelect.className = 'control-select';
+    for (const name of Object.keys(LIGHT_PRESETS)) {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      presetSelect.append(opt);
+    }
+    presetSelect.value = 'Studio';
+    presetSelect.addEventListener('change', () => {
+      const preset = LIGHT_PRESETS[presetSelect.value];
+      if (preset) this.store.setLighting(preset);
+    });
+    presetRow.append(presetLabel, presetSelect);
+    tab.append(presetRow);
+
+    this.ambientSlider = new Slider({
+      label: 'Ambient',
+      min: 0,
+      max: 2,
+      step: 0.05,
+      value: lighting.ambient,
+      onChange: (v) => this.store.setLighting({ ambient: v }),
+    });
+    this.keyLightSlider = new Slider({
+      label: 'Key',
+      min: 0,
+      max: 3,
+      step: 0.05,
+      value: lighting.key,
+      onChange: (v) => this.store.setLighting({ key: v }),
+    });
+    this.azimuthSlider = new Slider({
+      label: 'Azim.',
+      min: 0,
+      max: 360,
+      step: 5,
+      value: lighting.azimuth,
+      onChange: (v) => this.store.setLighting({ azimuth: v }),
+    });
+    this.elevationSlider = new Slider({
+      label: 'Elev.',
+      min: 0,
+      max: 90,
+      step: 5,
+      value: lighting.elevation,
+      onChange: (v) => this.store.setLighting({ elevation: v }),
+    });
+    this.headlightCheck = new Checkbox({
+      label: 'Headlight (follow camera)',
+      value: lighting.headlight,
+      onChange: (v) => this.store.setLighting({ headlight: v }),
+    });
+
+    tab.append(
+      this.ambientSlider.el,
+      this.keyLightSlider.el,
+      this.azimuthSlider.el,
+      this.elevationSlider.el,
+      this.headlightCheck.el,
+    );
+  }
+
+  private buildTabBar(tabs: Array<[string, HTMLElement]>): HTMLElement {
     const bar = document.createElement('div');
     bar.className = 'tab-bar';
-    const tabs: Array<[string, HTMLElement]> = [
-      ['Mechanism', mechanismTab],
-      ['Layers', layersTab],
-    ];
     const buttons = tabs.map(([name, content]) => {
       const btn = document.createElement('button');
       btn.className = 'tab-button';
@@ -320,6 +406,12 @@ export class Panel {
     this.contoursCheck.setValue(state.options.contours);
     this.panelCheck.setValue(state.options.beachballPanel);
     this.flipCheck.setValue(state.options.flipPlane);
+    const lg = state.options.lighting;
+    this.ambientSlider.setValue(lg.ambient);
+    this.keyLightSlider.setValue(lg.key);
+    this.azimuthSlider.setValue(lg.azimuth);
+    this.elevationSlider.setValue(lg.elevation);
+    this.headlightCheck.setValue(lg.headlight);
     for (const { key } of LAYERS) {
       const control = this.layerControls.get(key);
       control?.setVisible(state.options.visibility[key]);

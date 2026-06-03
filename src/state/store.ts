@@ -72,6 +72,13 @@ export class Store {
     this.notify();
   }
 
+  /** Update scene lighting. Pure render state — notifies with cached solution. */
+  setLighting(patch: Partial<ViewOptions['lighting']>): void {
+    const lighting = { ...this.state.options.lighting, ...patch };
+    this.state = { ...this.state, options: { ...this.state.options, lighting } };
+    this.notify();
+  }
+
   /** Toggle per-layer labels. Pure render state — notifies with cached solution. */
   setLabels(patch: Partial<Record<LayerKey, boolean>>): void {
     const labels = { ...this.state.options.labels, ...patch };

@@ -43,6 +43,7 @@ store.subscribe((solution, state) => {
   focal.setContours(contours);
   viewer.setAxesVisible(visibility.axes);
   viewer.setAxesOpacity(opacity.axes);
+  viewer.setLighting(state.options.lighting);
 });
 
 viewer.start();

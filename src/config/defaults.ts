@@ -35,6 +35,19 @@ export type LayerKey =
   | 'compassFocal'
   | 'axes';
 
+export interface LightingOptions {
+  /** Hemisphere (ambient) light intensity. */
+  ambient: number;
+  /** Directional key-light intensity. */
+  key: number;
+  /** Key-light azimuth, degrees clockwise from North. */
+  azimuth: number;
+  /** Key-light elevation above the horizon, degrees. */
+  elevation: number;
+  /** Key light follows the camera (headlight). */
+  headlight: boolean;
+}
+
 export interface ViewOptions {
   /** Amount of slip between the two blocks along the slip vector (0 = closed). */
   slip: number;
@@ -58,6 +71,8 @@ export interface ViewOptions {
   visibility: Record<LayerKey, boolean>;
   /** Per-layer label visibility. */
   labels: Record<LayerKey, boolean>;
+  /** Scene lighting. */
+  lighting: LightingOptions;
 }
 
 const ALL_LAYERS: LayerKey[] = [
@@ -109,4 +124,14 @@ export const DEFAULT_OPTIONS: ViewOptions = {
     axes: true,
   },
   labels: allLayers(false),
+  lighting: { ambient: 1.0, key: 1.2, azimuth: 120, elevation: 50, headlight: false },
+};
+
+/** Quick lighting presets. */
+export const LIGHT_PRESETS: Record<string, LightingOptions> = {
+  Studio: { ambient: 1.0, key: 1.2, azimuth: 120, elevation: 50, headlight: false },
+  Soft: { ambient: 1.7, key: 0.5, azimuth: 120, elevation: 60, headlight: false },
+  Dramatic: { ambient: 0.3, key: 2.2, azimuth: 140, elevation: 28, headlight: false },
+  Flat: { ambient: 2.0, key: 0.0, azimuth: 120, elevation: 50, headlight: false },
+  Headlight: { ambient: 0.7, key: 1.4, azimuth: 120, elevation: 50, headlight: true },
 };

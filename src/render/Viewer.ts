@@ -26,6 +26,9 @@ export class Viewer {
   private readonly renderer: WebGLRenderer;
   private readonly controls: OrbitControls;
   private readonly axes = new AxesHelper(2);
+  private readonly hemiLight: HemisphereLight;
+  private readonly keyLight: DirectionalLight;
+  private headlight = false;
 
   constructor(container: HTMLElement) {
     this.renderer = new WebGLRenderer({ antialias: true });
@@ -45,11 +48,11 @@ export class Viewer {
     this.controls.enableDamping = true;
     this.controls.target.set(0, 0, 0);
 
-    // Lighting for the MeshStandardMaterial arrows.
-    this.scene.add(new HemisphereLight(0xffffff, 0x202028, 1.0));
-    const key = new DirectionalLight(0xffffff, 1.2);
-    key.position.set(4, -2, 6);
-    this.scene.add(key);
+    // Lighting (intensity/direction are adjustable via setLighting).
+    this.hemiLight = new HemisphereLight(0xffffff, 0x202028, 1.0);
+    this.keyLight = new DirectionalLight(0xffffff, 1.2);
+    this.keyLight.position.set(4, -2, 6);
+    this.scene.add(this.hemiLight, this.keyLight);
 
     // E/N/U orientation reference (red/green/blue).
     this.scene.add(this.axes);
@@ -79,8 +82,23 @@ export class Viewer {
     applyOpacity(this.axes.material as Material, opacity);
   }
 
+  /** Update scene lighting (intensities, key-light direction, headlight mode). */
+  setLighting(l: { ambient: number; key: number; azimuth: number; elevation: number; headlight: boolean }): void {
+    this.hemiLight.intensity = l.ambient;
+    this.keyLight.intensity = l.key;
+    this.headlight = l.headlight;
+    if (!l.headlight) {
+      const az = (l.azimuth * Math.PI) / 180;
+      const el = (l.elevation * Math.PI) / 180;
+      const d = 8;
+      // (E, N, Up) from azimuth (clockwise from North) and elevation.
+      this.keyLight.position.set(d * Math.cos(el) * Math.sin(az), d * Math.cos(el) * Math.cos(az), d * Math.sin(el));
+    }
+  }
+
   private readonly tick = (): void => {
     this.controls.update();
+    if (this.headlight) this.keyLight.position.copy(this.camera.position); // light from the camera
     for (const cb of this.frameCallbacks) cb(this.camera);
     this.renderer.render(this.scene, this.camera);
   };
