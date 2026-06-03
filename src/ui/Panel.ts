@@ -14,6 +14,7 @@ import type { FieldMode } from '../core/waveField';
 import { decompose } from '../core/decompose';
 import { Slider } from './controls/Slider';
 import { Checkbox } from './controls/Checkbox';
+import { MatrixCell } from './controls/MatrixCell';
 import { LayerControl } from './controls/LayerControl';
 import { EventPicker, type FocalEvent } from './EventPicker';
 import { fetchEvent } from '../data/usgs';
@@ -27,14 +28,14 @@ const DECOMP: Array<{ key: ComponentKey; label: string }> = [
   { key: 'clvd', label: 'CLVD' },
 ];
 
-const COMPONENTS: Array<{ key: keyof MomentTensor; label: string }> = [
-  { key: 'mrr', label: 'Mrr' },
-  { key: 'mtt', label: 'Mtt' },
-  { key: 'mpp', label: 'Mpp' },
-  { key: 'mrt', label: 'Mrt' },
-  { key: 'mrp', label: 'Mrp' },
-  { key: 'mtp', label: 'Mtp' },
+// 3×3 symmetric tensor layout: [Mrr Mrt Mrp / Mtr Mtt Mtp / Mpr Mpt Mpp].
+// Off-diagonal mirrors share a component key (editing either updates the pair).
+const TENSOR_GRID: Array<{ key: keyof MomentTensor; label: string }> = [
+  { key: 'mrr', label: 'Mrr' }, { key: 'mrt', label: 'Mrt' }, { key: 'mrp', label: 'Mrp' },
+  { key: 'mrt', label: 'Mtr' }, { key: 'mtt', label: 'Mtt' }, { key: 'mtp', label: 'Mtp' },
+  { key: 'mrp', label: 'Mpr' }, { key: 'mtp', label: 'Mpt' }, { key: 'mpp', label: 'Mpp' },
 ];
+const TENSOR_MAX = 9.99;
 
 const FIELD_MODES: Array<{ value: FieldMode; label: string }> = [
   { value: 'full', label: 'P+S' },
@@ -64,7 +65,7 @@ const fixed = (v: number, d = 0): string => v.toFixed(d);
 
 export class Panel {
   readonly el: HTMLDivElement;
-  private readonly componentSliders = new Map<keyof MomentTensor, Slider>();
+  private readonly matrixCells: Array<{ cell: MatrixCell; key: keyof MomentTensor }> = [];
   private readonly decompChecks = new Map<ComponentKey, Checkbox>();
   private readonly layerControls = new Map<LayerKey, LayerControl>();
   private readonly slipSlider: Slider;
@@ -122,18 +123,19 @@ export class Panel {
     mechanismTab.append(this.usgsStatus);
 
     mechanismTab.append(section('Moment Tensor'));
-    for (const { key, label } of COMPONENTS) {
-      const slider = new Slider({
+    const grid = document.createElement('div');
+    grid.className = 'matrix-grid';
+    for (const { key, label } of TENSOR_GRID) {
+      const cell = new MatrixCell({
         label,
-        min: -2,
-        max: 2,
-        step: 0.01,
         value: state.tensor[key],
+        max: TENSOR_MAX,
         onChange: (v) => this.store.setTensor({ [key]: v }),
       });
-      this.componentSliders.set(key, slider);
-      mechanismTab.append(slider.el);
+      this.matrixCells.push({ cell, key });
+      grid.append(cell.el);
     }
+    mechanismTab.append(grid);
 
     // Decomposition component toggles (which parts feed the visualization).
     mechanismTab.append(section('Decomposition'));
@@ -308,7 +310,7 @@ export class Panel {
   }
 
   private reflect(solution: FocalSolution, state: { tensor: MomentTensor; options: ViewOptions }): void {
-    for (const { key } of COMPONENTS) this.componentSliders.get(key)?.setValue(state.tensor[key]);
+    for (const { cell, key } of this.matrixCells) cell.setValue(state.tensor[key]);
     for (const { key } of DECOMP) this.decompChecks.get(key)?.setValue(state.options.components[key]);
     this.slipSlider.setValue(state.options.slip);
     this.scaleSlider.setValue(state.options.scale);
